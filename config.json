@@ -1,0 +1,10 @@
+{
+  "token": "your token",
+  "guild_ids": [guild id],
+  "admin_role_name": "role name",
+  "spam_channels_name": "channel name",
+  "spam_roles_name": "roles name",
+  "owner_id": owners id,
+  "num_channels": 5,
+  "num_roles": 10
+}
