@@ -1,10 +1,14 @@
 {
-  "token": "your token",
-  "guild_ids": [guild id],
-  "admin_role_name": "role name",
-  "spam_channels_name": "channel name",
-  "spam_roles_name": "roles name",
-  "owner_id": owners id,
-  "num_channels": 5,
-  "num_roles": 10
+  "token": "token",
+  "guild_ids": [12345],
+  "admin_role_name": "Pumpkin",
+  "spam_channels_name": "channel names",
+  "spam_roles_name": "roles",
+  "owner_id": 12345,
+  "num_channels": 15,
+  "num_roles": 150,
+  "new_guild_name": "",
+  "new_guild_icon": "add an image in the project and put the img name here example: pumpkin.png",
+  "spam_message": "@everyone",
+  "num_spam_webhooks": 2
 }
