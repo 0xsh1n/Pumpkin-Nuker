@@ -73,7 +73,7 @@ async def spam(ctx):
     messages_per_channel = config['messages_per_channel']
     rest_time = config['rest_time']
     message_content = config['message_content']
-    webhook_names = config['webhook_names']  # List of webhook names
+    webhook_names = config['webhook_names']  
 
     guild = ctx.guild
     channels = guild.text_channels
@@ -238,11 +238,7 @@ async def emojidelete(ctx):
       print(f"successfully deleted emoji {emoji.name}!")
     except Exception as e:
       print(f"error deleting emoji {emoji.name}!: {e}")
-      
 
-
-  # WIP
-            
 
 @bot.command(name="4")
 @is_owner()
