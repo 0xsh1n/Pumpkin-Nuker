@@ -4,11 +4,8 @@ import json
 import random
 import colorama
 import aiohttp
-import sys
 import asyncio
-import requests
 import os
-import time
 import itertools
 from colorama import Fore
 from discord import Permissions
