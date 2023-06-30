@@ -12,4 +12,6 @@ apt upgrade
 git clone https://github.com/FriendlyPumpkin/Pumpkin
 cd Pumpkin
 python script.py
+
+NOTE: Modify the config.json file
 ```
