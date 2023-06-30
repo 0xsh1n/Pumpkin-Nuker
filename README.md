@@ -9,8 +9,8 @@ discord server nuker (WIP)
 ```
 apt update
 apt upgrade
-git clone 
+git clone https://github.com/FriendlyPumpkin/Pumpkin
 cd Pumpkin
-pip3 install -r requirements.txt
-python3 script.py
+pip install -r requirements.txt
+python script.py
 ```
