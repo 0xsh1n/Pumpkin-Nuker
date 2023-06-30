@@ -64,7 +64,6 @@ def is_owner():
     return commands.check(predicate)
 
 
-
 @bot.command(name="3")
 async def spam(ctx):
     with open('config.json', 'r') as file:
@@ -84,11 +83,11 @@ async def spam(ctx):
         async with aiohttp.ClientSession() as session:
             webhook_list = []
             for channel in channels:
-                webhook = await channel.create_webhook(name=webhook_names[0])  # Use the first webhook name in the list
+                webhook = await channel.create_webhook(name=webhook_names[0]) 
                 webhook_list.append(webhook)
-                await asyncio.sleep(1)  # Add a delay of 1 second between webhook creation
+                await asyncio.sleep(1)  
 
-            for _ in range(20):  # 20 rounds of spamming
+            for _ in range(20):  
                 for _ in range(messages_per_channel):
                     embed = discord.Embed(
                         title='Spam',
@@ -96,23 +95,23 @@ async def spam(ctx):
                     )
                     tasks = []
                     for webhook in webhook_list:
-                        # Create a task for each webhook to send the message concurrently
+                        
                         tasks.append(webhook.send(content=message_content, embed=embed))
 
                     while True:
                         try:
-                            # Execute all webhook send tasks concurrently
+                            
                             await asyncio.gather(*tasks)
-                            break  # Break the loop if no rate limit encountered
+                            break 
                         except aiohttp.ClientResponseError as e:
-                            if e.status == 429:  # Rate limited
+                            if e.status == 429:  
                                 print("Rate limited! Retrying after exponential backoff...")
                                 retry_after = int(e.headers.get('Retry-After', '1'))
-                                await asyncio.sleep(retry_after + 1)  # Add additional wait time
-                                print("Continuing spamming...")  # Debug print statement
+                                await asyncio.sleep(retry_after + 1)
+                                print("Continuing spamming...")  
                             else:
-                                print("Error sending webhook message:", e)  # Debug print statement
-                                raise  # Re-raise the exception if it's not a rate limit
+                                print("Error sending webhook message:", e) 
+                                raise  
 
                     await asyncio.sleep(rest_time)
 
@@ -122,6 +121,7 @@ async def spam(ctx):
     except aiohttp.ClientError as e:
         print(f"Error sending webhook message: {e}")
         
+
 
 @bot.command(name="1")
 @is_owner()
