@@ -11,6 +11,5 @@ apt update
 apt upgrade
 git clone https://github.com/FriendlyPumpkin/Pumpkin
 cd Pumpkin
-pip install -r requirements.txt
 python script.py
 ```
