@@ -1,10 +1,10 @@
-# Mr-Pumpkin-s-Nuker
-discord server nuker (WIP)
-## this is for educational purposes only
+# Pumpkin Nuker
+a discord server nuker
 
 
 
-<h2> Termux</h2><img src="https://brandslogos.com/wp-content/uploads/images/large/terminal-logo.png" width="50" height="50">  
+
+<h2>Termux</h2>
 
 ```
 apt update
