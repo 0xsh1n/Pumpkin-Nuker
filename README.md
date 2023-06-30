@@ -1,5 +1,5 @@
 # Pumpkin Nuker
-a discord server nuker
+a discord server nuker (WIP)
 
 
 
