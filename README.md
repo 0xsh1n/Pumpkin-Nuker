@@ -9,8 +9,8 @@ discord server nuker (WIP)
 ```
 apt update
 apt upgrade
-git clone https://github.com/nordbearbotdev/Torpeda
-cd Torpeda
+git clone 
+cd Pumpkin
 pip3 install -r requirements.txt
-python3 main.py 
+python3 script.py
 ```
