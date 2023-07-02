@@ -7,7 +7,6 @@ import asyncio
 import os
 import itertools
 from discord import Permissions
-from discord.ext import commands
 from design.colors import *
 from design.banner import banner
 
