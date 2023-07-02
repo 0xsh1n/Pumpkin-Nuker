@@ -2,16 +2,15 @@ import discord
 from discord.ext import commands
 import json
 import random
-import colorama
 import aiohttp
 import asyncio
 import os
 import itertools
-from colorama import Fore, Style
 from discord import Permissions
 from discord.ext import commands
+from design.colors import *
+from design.banner import banner
 
-colorama.init()
 
 
 with open('config.json', 'r') as file:
@@ -36,16 +35,24 @@ intents = discord.Intents.all()
 intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+import asyncio
+
+    
+
 @bot.event
 async def on_ready():
-    
-  print(f"Logged in as {bot.user}")
-  print(f"Prefix: {bot.command_prefix}")
-  print(f"Total servers: {len(bot.guilds)}")
-  print(f"Total members: {len(bot.users)} ")
-  print("Connected Servers: ")
-  for guild in bot.guilds:
-    print(guild.name)
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX, "\n\n\t\tPreparing Nuker...", Style.RESET_ALL)
+    await asyncio.sleep(2)
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX, "\n\n\t\tDone...", Style.RESET_ALL)
+    await asyncio.sleep(1)
+    banner()
+    print("\n", Style.BRIGHT + Fore.RED + "|" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTCYAN_EX, "- " * 4, f"Logged in as {bot.user}", "- " * 4 + Style.RESET_ALL, Style.BRIGHT + Fore.RED + "|" + Style.RESET_ALL)
+    print("\n", Style.BRIGHT + Fore.LIGHTRED_EX + "[+]" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTYELLOW_EX, f"Prefix: {bot.command_prefix}" + Style.RESET_ALL)
+    print("\n", Style.BRIGHT + Fore.LIGHTRED_EX + "[+]" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTYELLOW_EX, f"Total servers: {len(bot.guilds)}" + Style.RESET_ALL)
+    print("\n", Style.BRIGHT + Fore.LIGHTRED_EX + "↓" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTGREEN_EX, "Connected Servers: " + Style.RESET_ALL)
+    for guild in bot.guilds:
+        print("\n", Style.BRIGHT + Fore.LIGHTRED_EX + ">" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTYELLOW_EX, guild.name + Style.RESET_ALL)
+        
 
 def is_owner():
     async def predicate(ctx):
