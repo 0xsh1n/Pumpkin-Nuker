@@ -1,5 +1,6 @@
 # Pumpkin Nuker
-a discord server nuker (WIP)
+a discord server nuker (WIP) \n
+(FOR EDUCATIONAL PURPOSES ONLY)
 
 
 
