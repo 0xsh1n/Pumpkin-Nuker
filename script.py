@@ -62,6 +62,7 @@ def is_owner():
 
 
 @bot.command(name="3")
+@is_owner()
 async def spam(ctx):
     with open('config.json', 'r') as file:
         config = json.load(file)
