@@ -1,5 +1,4 @@
 from design.colors import *
-import discord
 
 
 logo = f'''
