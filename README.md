@@ -1,6 +1,5 @@
 # Pumpkin Nuker
 a discord server nuker (WIP)
-(EDUCATIONAL PURPOSES ONLY)
 
 
 
