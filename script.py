@@ -181,7 +181,7 @@ async def spam(webhook_list):
                                 break
                             except aiohttp.ClientResponseError as e:
                                 if e.status == 429:
-                                    print(Fore.RED + '✗' + Style.RESET_ALL, "Rate limited! Retrying after exponential backoff...")
+                                    print(Fore.RED + '✗' + Style.RESET_ALL, "Rate limited! Retrying...")
                                     retry_after = int(e.headers.get('Retry-After', '1'))
                                     await asyncio.sleep(retry_after + 1)
                                     print(Fore.GREEN + '✓' + Style.RESET_ALL, "Continuing spamming...")
