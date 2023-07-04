@@ -18,4 +18,4 @@ python script.py
 NOTE: Modify the config.json file
 ```
 
-'!cmd' for list of commands
+```!cmd``` for list of commands
