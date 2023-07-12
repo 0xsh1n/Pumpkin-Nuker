@@ -4,6 +4,20 @@ a discord server nuker (WIP).
 (FOR EDUCATIONAL PURPOSES ONLY)
 
 
+## Features
+ - [x] Ban Members
+ - [x] Create Channels 
+ - [x] Create Roles 
+ - [x] Change Server Name
+ - [x] Change Server Icon
+ - [ ] Create Emojis
+ - [x] Delete Channels 
+ - [x] Delete Roles 
+ - [x] Delete Emojis 
+ - [ ] Delete Stickers 
+ - [x] Spam Channels
+ - [x] Webhook Spam
+ - [x] Give administrator perm to Everyone/Yourself
 
 
 <h2>Termux</h2>
