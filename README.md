@@ -30,6 +30,7 @@ cd Pumpkin
 python script.py
 
 NOTE: Modify the config.json file
+NOTE: Upload a .png file for the server icon or else the code will break
 ```
 
 ```!cmd``` for list of commands
