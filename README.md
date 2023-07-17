@@ -25,7 +25,7 @@ a discord server nuker (WIP).
 ```
 apt update
 apt upgrade
-git clone https://github.com/FriendlyPumpkin/Pumpkin
+git clone https://github.com/kinxyz/Pumpkin-Nuker
 cd Pumpkin
 python script.py
 
