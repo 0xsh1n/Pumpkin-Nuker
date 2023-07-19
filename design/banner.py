@@ -13,7 +13,7 @@ logo = f'''
 ░░        ░░░ ░ ░ ░      ░   ░░       ░ ░░ ░  ▒ ░   ░   ░ ░ 
             ░            ░            ░  ░    ░           ░ 
                                                             
-                                                       '''
+                                                       \n Made by _notpumpkin'''
                                                        
 def banner():
     print(colr + logo)
