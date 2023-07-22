@@ -20,6 +20,7 @@ a discord server nuker (WIP).
  - [x] Give administrator perm to Everyone/Yourself
 
 <h2>Windows</h2>
+
 ```
 git clone https://github.com/kinxyz/Pumpkin-Nuker
 cd Pumpkin-Nuker
