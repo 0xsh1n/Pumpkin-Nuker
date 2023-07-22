@@ -20,13 +20,13 @@ a discord server nuker (WIP).
  - [x] Give administrator perm to Everyone/Yourself
 
 
-<h2>Termux</h2>
+<h2>Termux/Windows</h2>
 
 ```
 apt update
 apt upgrade
 git clone https://github.com/kinxyz/Pumpkin-Nuker
-cd Pumpkin
+cd Pumpkin-Nuker
 python script.py
 
 NOTE: Modify the config.json file
