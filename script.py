@@ -146,7 +146,6 @@ async def create_webhook_with_delay(channel, name, delay):
     webhook = await channel.create_webhook(name=name)
     return webhook
 
-# Assuming 'webhook_list' is a list of webhook objects.
 
 async def spam(webhook_list):
     try:
