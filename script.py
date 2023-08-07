@@ -20,7 +20,7 @@ SPAM_ROLES_NAME = config['spam_roles_name']
 OWNER_ID = config['owner_id']
 NUM_CHANNELS = config['num_channels']
 NUM_ROLES = config['num_roles']
-BAN_MESSAGE = config['ban_message']
+ban_message = config['ban_message']
 
 
 @bot.event
@@ -192,9 +192,9 @@ async def spam(webhook_list):
     except Exception as e:
         print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f'Error in spam command: {e}')
 
-async def send_spam(webhook, message_content, embed):
+async def send_spam(webhook, message_content):
     try:
-        await webhook.send(content=message_content, embed=embed)
+        await webhook.send(content=message_content)
     except aiohttp.ClientResponseError as e:
         if e.status == 429:
             print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, "Rate limited! Retrying after exponential backoff...")
