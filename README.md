@@ -18,6 +18,7 @@ a discord server nuker (WIP).
  - [x] Spam Channels
  - [x] Webhook Spam
  - [x] Give administrator perm to Everyone/Yourself
+ - [x] Create Vc's
 
 <h2>Windows</h2>
 
