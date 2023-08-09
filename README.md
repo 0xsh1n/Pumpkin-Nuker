@@ -1,5 +1,5 @@
 <p align="center">  
-  Discord Custom Status 
+  Pumpkin Nuker
   </p> 
 
 ## Disclaimer 
