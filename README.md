@@ -1,3 +1,7 @@
+<p align="center">  
+  Discord Custom Status 
+  </p> 
+
 ## Disclaimer 
   
  |This Nuker was made for Educational purposes| 
