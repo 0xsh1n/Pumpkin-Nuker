@@ -1,8 +1,9 @@
-# Pumpkin Nuker
-a discord server nuker (WIP).
-
-(FOR EDUCATIONAL PURPOSES ONLY)
-
+## Disclaimer 
+  
+ |This Nuker was made for Educational purposes| 
+ |-------------------------------------------------| 
+ By using this Nuker, you agree that you hold responsibility and accountability of any consequences caused by your actions. 
+ 
 
 ## Features
  - [x] Ban Members
