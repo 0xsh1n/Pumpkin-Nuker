@@ -1,6 +1,6 @@
-<p align="center">  
+<h3 align="center">  
   Pumpkin Nuker
-  </p> 
+  </h3> 
 
 ## Disclaimer 
   
