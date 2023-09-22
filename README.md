@@ -1,13 +1,6 @@
 <h3 align="center">  
   Pumpkin Nuker
-  </h3> 
-
-## Disclaimer 
-  
- |This Nuker was made for Educational purposes| 
- |-------------------------------------------------| 
- By using this Nuker, you agree that you hold responsibility and accountability of any consequences caused by your actions. 
- 
+  </h3>
 
 ## Features
  - [x] Ban Members
@@ -38,3 +31,5 @@ python script.py
 - !cmd for list of commands
 - Modify the config.json file
 - Upload a .png file for the server icon or else the code will break
+
+<h4 align="center"> By using this Nuker, you agree that you hold responsibility and accountability of any consequences caused by your actions. </h4>
