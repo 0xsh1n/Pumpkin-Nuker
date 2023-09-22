@@ -28,7 +28,6 @@ python script.py
 ```
 
 ## NOTES
-- !cmd for list of commands
 - Modify the config.json file
 - Upload a .png file for the server icon or else the code will break
 
