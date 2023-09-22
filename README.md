@@ -25,13 +25,6 @@
  - [x] Give administrator perm to Everyone/Yourself
  - [x] Create Vc's
 
-<h2>Windows</h2>
-
-```
-git clone https://github.com/kinxyz/Pumpkin-Nuker
-cd Pumpkin-Nuker
-python script.py
-```
 
 <h2>Termux</h2>
 
