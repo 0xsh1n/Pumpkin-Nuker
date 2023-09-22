@@ -29,8 +29,6 @@
 <h2>Installation</h2>
 
 ```
-apt update
-apt upgrade
 git clone https://github.com/kinxyz/Pumpkin-Nuker
 cd Pumpkin-Nuker
 python script.py
