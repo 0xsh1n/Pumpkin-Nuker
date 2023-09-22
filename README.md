@@ -26,7 +26,7 @@
  - [x] Create Vc's
 
 
-<h2>Termux</h2>
+<h2>Installation</h2>
 
 ```
 apt update
