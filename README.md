@@ -1,6 +1,9 @@
 <h3 align="center">  
   Pumpkin Nuker
   </h3>
+<p align="center">
+A Tool That Destroys Discord Servers
+</p>
 
 ## Features
  - [x] Ban Members
