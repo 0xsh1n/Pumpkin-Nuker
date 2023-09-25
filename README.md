@@ -31,7 +31,7 @@ python script.py
 ```
 
 ## NOTES
-- 50 maximum channels can only be created at the moment
+- 50 maximum channels can only be created
 - Modify the config.json file
 - Upload a .png file for the server icon or else the code will break
 - this nuker will no longer be improved / get another feature but i'll try to update the code if it breaks
