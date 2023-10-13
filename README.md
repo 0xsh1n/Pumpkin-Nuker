@@ -34,8 +34,9 @@ python script.py
 ```
 
 ## NOTES
-- 50 maximum channels can only be created
 - Modify the config.json file
 - Upload a .png file for the server icon or else the code will break
-- no proxy support so only 50 webhook can be created, i recommend to make alot of vc's to maximize the channels
+- no proxy support so only 50 webhooks can be created, meaning only 50 channels are recommended to be created. (don't worry, the spamming is still fast)
+- use mass vc command to maximize the channels
+
 <h4 align="center"> By using this Nuker, you agree that you hold responsibility and accountability of any consequences caused by your actions. </h4>
