@@ -37,6 +37,5 @@ python script.py
 - 50 maximum channels can only be created
 - Modify the config.json file
 - Upload a .png file for the server icon or else the code will break
-- this nuker will no longer be improved / get another feature but i'll try to update the code if it breaks
-
+- no proxy support so only 50 webhook can be created, i recommend to make alot of vc's to maximize the channels
 <h4 align="center"> By using this Nuker, you agree that you hold responsibility and accountability of any consequences caused by your actions. </h4>
