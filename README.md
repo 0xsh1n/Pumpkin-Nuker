@@ -35,7 +35,7 @@ python script.py
 
 ## NOTES
 - Modify the config.json file
-- Upload a .png file for the server icon or else the code will break
+- Upload a .png file in root for the server icon or else the code will break
 - no proxy support so only 50 webhooks can be created, meaning only 50 channels are recommended to be created. (don't worry, the spamming is still fast)
 - use mass vc command to maximize the channels
 
