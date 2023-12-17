@@ -28,7 +28,7 @@ A Tool That Destroys Discord Servers
 <h2>Installation</h2>
 
 ```
-git clone https://github.com/kinxyz/Pumpkin-Nuker
+git clone https://github.com/0xshinn/Pumpkin-Nuker
 cd Pumpkin-Nuker
 python script.py
 ```
