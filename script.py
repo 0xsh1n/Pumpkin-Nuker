@@ -1,4 +1,4 @@
-#coded by saint
+#coded by 0xshinn
 
 import json
 import random
